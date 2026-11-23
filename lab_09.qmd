@@ -38,19 +38,38 @@ list_of_vectors <- list(
 )
 numbers <- 1:10
 summary_stats <- list(mean, median, sd, var)
+
+list_of_vectors
+summary_stats
 ```
 
 - [ ] Calculate the mean of each vector in `list_of_vectors`.
 - [ ] For each statistic in `summary_stats`, apply the statistic to `numbers`.
 
 ::: {.solution}
+```{r}
+
+
+sapply(list_of_vectors, function(v) mean(v))
+#used sapply because not working with tibble
+
+```
+- [ ] For each statistic in `summary_stats`, apply the statistic to `numbers`.
+```{r}
+
+sapply(summary_stats, function(v) v(numbers))
+map_dbl(summary_stats, function(v) v(numbers))
+```
 
 :::
 
 Next we use `pmap` to draw several plots of the penguins at once.
 
 ```{r}
+x_variables <- c("flipper_length_mm1", "bill_length_mm2", "bill_depth_mm3")
 variables <- c("flipper_length_mm", "bill_length_mm", "bill_depth_mm")
+display_names <- c("a", "b", "c")
+titles <- c("1", "2", "3")
 ```
 
 - [ ] For each `<variable>` in `variables`, produce a plot of that variable against `body_mass_g` in `penguins`. (*Hint*: each `<variable>` is a string, not a column; recall `.data[[...]]` from Lab 8.)
@@ -58,6 +77,25 @@ variables <- c("flipper_length_mm", "bill_length_mm", "bill_depth_mm")
 - [ ] Create a vector of titles and add them to your plot.
 
 ::: {.solution}
+```{r}
+
+
+penguin_plot_f <- function (v, d, t) {
+  ggplot(penguins, aes(x = body_mass_g , y = .data[[v]])) + 
+  geom_point() +
+    labs(
+      x = "body_mass_g",
+      y = d,
+      title = t
+    )
+}
+
+graph_penguin <- pmap(list(variables,display_names, titles), penguin_plot_f)
+
+graph_penguin
+```
+
+
 
 :::
 
